@@ -10,6 +10,7 @@
         "laravel/horizon": "^5.29",
         "laravel/telescope": "^5.2",
         "laravel/tinker": "^2.9",
+        "league/csv": "^9.18",
         "sentry/sentry-laravel": "^4.9"
     },
     "require-dev": {
