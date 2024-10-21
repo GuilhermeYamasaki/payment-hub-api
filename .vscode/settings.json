@@ -1,0 +1,12 @@
+{
+    "laravel-pint.enable": true,
+    "LaravelIntellisense.docker": "sail",
+    "[blade]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+    },
+    "[php]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "open-southeners.laravel-pint",
+    },
+}

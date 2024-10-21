@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "open-southeners.laravel-pint",
+        "onecentlin.laravel5-snippets",
+        "pgl.laravel-jump-controller",
+        "bmewburn.vscode-intelephense-client",
+        "zobo.php-intellisense",
+        "mikestead.dotenv",
+        "EditorConfig.EditorConfig"
+    ]
+}

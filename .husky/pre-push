@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+./vendor/bin/sail artisan test ||
+(
+  echo 'Tests failed'
+  false;
+)
+
+echo 'Push this now. 🚀'

@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+./vendor/bin/pint --test ||
+(
+  echo 'Pint errors found'
+  false;
+)
+
+echo 'Committing this now. 🚀'
