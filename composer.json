@@ -11,7 +11,9 @@
         "laravel/telescope": "^5.2",
         "laravel/tinker": "^2.9",
         "league/csv": "^9.18",
-        "sentry/sentry-laravel": "^4.9"
+        "league/flysystem-aws-s3-v3": "^3.29",
+        "sentry/sentry-laravel": "^4.9",
+        "spatie/async": "^1.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
