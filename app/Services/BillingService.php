@@ -2,23 +2,22 @@
 
 namespace App\Services;
 
-use App\Enums\DebtStatusEnum;
+use App\Jobs\GeneratePaymentSlipJob;
+use App\Jobs\NotifySlipMailJob;
 use App\Jobs\ProcessCsvBillingJob;
+use App\Repositories\Interfaces\DebtRepositoryInterface;
 use App\Services\Interfaces\BillingServiceInterface;
-use App\Services\Interfaces\DebtServiceInterface;
-use App\Services\Interfaces\MailServiceInterface;
-use App\Services\Interfaces\PaymentSlipServiceInterface;
 use App\Traits\FileTrait;
+use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 
 class BillingService implements BillingServiceInterface
 {
     use FileTrait;
 
     public function __construct(
-        private readonly PaymentSlipServiceInterface $paymentSlipService,
-        private readonly MailServiceInterface $mailService,
-        private readonly DebtServiceInterface $debtService
+        private readonly DebtRepositoryInterface $debtRepository
     ) {}
 
     /**
@@ -34,44 +33,33 @@ class BillingService implements BillingServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function processDebt(array $data): void
+    public function processDebts(Collection $data): void
     {
-        $debtId = data_get($data, 'debtID');
+        $debts = $data->map(
+            fn ($rawDebt) => $this->hydrateDebt($rawDebt)
+        );
 
-        $debt = $this->debtService->find($debtId);
+        $this->debtRepository->insert($debts->toArray());
 
-        if (empty($debt)) {
-            $debt = $this->hydrateDebt($data);
-            $this->debtService->persist($debt);
-        }
-
-        if ($debt->status_enum === DebtStatusEnum::IMPORTED) {
-            $this->paymentSlipService->generateSlip($debt);
-
-            data_set($debt, 'status_enum', DebtStatusEnum::GENERATED);
-
-            $this->debtService->persist($debt);
-        }
-
-        if ($debt->status_enum === DebtStatusEnum::GENERATED) {
-            $this->mailService->notifyBilling($debt);
-
-            data_set($debt, 'status_enum', DebtStatusEnum::SENDED);
-
-            $this->debtService->persist($debt);
-        }
+        $debts->pluck('id')
+            ->each(function (string $debtId) {
+                NotifySlipMailJob::dispatchAfterResponse($debtId);
+                GeneratePaymentSlipJob::dispatchAfterResponse($debtId);
+            });
     }
 
-    private function hydrateDebt(array $data): object
+    /**
+     * Convert raw billing debt to debt model of plataform
+     */
+    private function hydrateDebt(array $data): array
     {
-        return (object) [
-            'id' => data_get($data, 'debtID'),
+        return [
+            'id' => data_get($data, 'debtId'),
             'name' => data_get($data, 'name'),
-            'government_id' => data_get($data, 'governmentId'),
+            'government_id' => (int) data_get($data, 'governmentId'),
             'email' => data_get($data, 'email'),
-            'amount' => data_get($data, 'debtAmount') * 100,
-            'due_date' => data_get($data, 'debtDueDate'),
-            'status_enum' => DebtStatusEnum::IMPORTED,
+            'amount' => ((int) data_get($data, 'debtAmount')) * 100, // Remove cents to avoid float precision
+            'due_date_at' => Carbon::parse(data_get($data, 'debtDueDate'))->endOfDay(),
         ];
     }
 }

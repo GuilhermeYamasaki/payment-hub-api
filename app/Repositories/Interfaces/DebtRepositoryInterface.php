@@ -4,9 +4,9 @@ namespace App\Repositories\Interfaces;
 
 interface DebtRepositoryInterface
 {
-    public function create(object $data): void;
+    public function insert(array $debts): void;
 
-    public function update(string $id, object $data): void;
+    public function update(string $id, array $data): void;
 
     public function find(string $id): ?object;
 }

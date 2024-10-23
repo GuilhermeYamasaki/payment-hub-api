@@ -13,7 +13,7 @@ class ProcessCsvBillingJob implements ShouldQueue
 {
     use FileTrait, Queueable;
 
-    private const MAX_BILLINGS_EACH_JOB = 100;
+    private const MAX_BILLINGS_EACH_JOB = 1000;
 
     /**
      * Create a new job instance.
@@ -39,10 +39,10 @@ class ProcessCsvBillingJob implements ShouldQueue
         $csv->setDelimiter(',');
         $csv->setHeaderOffset(0);
 
-        collect($csv->getRecords())
-            ->chunk(self::MAX_BILLINGS_EACH_JOB)
-            ->each(
-                fn ($data) => ProcessBillingJob::dispatch($data)
+        foreach ($csv->chunkBy(self::MAX_BILLINGS_EACH_JOB) as $billings) {
+            ProccessDebtsJob::dispatchAfterResponse(
+                collect($billings)
             );
+        }
     }
 }

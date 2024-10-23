@@ -11,12 +11,12 @@ class DebtRepository implements DebtRepositoryInterface
         private readonly Debt $model
     ) {}
 
-    public function create(object $data): void
+    public function insert(array $debts): void
     {
-        $this->model->create($data);
+        $this->model->insertOrIgnore($debts);
     }
 
-    public function update(string $id, object $data): void
+    public function update(string $id, array $data): void
     {
         $this->model->where('id', $id)->update($data);
     }

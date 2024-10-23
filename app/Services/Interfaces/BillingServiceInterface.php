@@ -3,6 +3,7 @@
 namespace App\Services\Interfaces;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 
 interface BillingServiceInterface
 {
@@ -12,7 +13,7 @@ interface BillingServiceInterface
     public function saveAndProcessFile(UploadedFile $file): void;
 
     /**
-     * Process debt.
+     * Process debts
      */
-    public function processDebt(array $data): void;
+    public function processDebts(Collection $debts): void;
 }
