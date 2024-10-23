@@ -17,8 +17,9 @@ return new class extends Migration
             $table->bigInteger('government_id')->unsigned();
             $table->string('email');
             $table->integer('amount')->unsigned();
-            $table->date('due_date');
-            $table->integer('status_enum');
+            $table->timestamp('due_date_at');
+            $table->timestamp('notify_at')->nullable();
+            $table->timestamp('generate_slip_at')->nullable();
             $table->timestamps();
         });
     }

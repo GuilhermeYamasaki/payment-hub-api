@@ -2,21 +2,36 @@
 
 namespace App\Services;
 
+use App\Services\Interfaces\DebtServiceInterface;
 use App\Services\Interfaces\MailServiceInterface;
-use App\Traits\FileTrait;
 use Illuminate\Support\Facades\Log;
 
 class MailService implements MailServiceInterface
 {
-    use FileTrait;
+    public function __construct(
+        private readonly DebtServiceInterface $debtService
+    ) {}
 
     /**
      * {@inheritDoc}
      */
-    public function notifyBilling(object $debt): void
+    public function notifyBilling(string $debtId): void
     {
-        Log::debug('Notify user of billing', [
-            'debt' => $debt,
-        ]);
+        $debt = $this->debtService->find($debtId);
+        if (data_get($debt, 'notify_at')) {
+            return;
+        }
+
+        $this->sendEmail($debt);
+
+        $this->debtService->recordNotify($debtId);
+    }
+
+    /**
+     * Abstract method to send email notification.
+     */
+    private function sendEmail(object $debt): void
+    {
+        Log::debug('Notify user of billing');
     }
 }

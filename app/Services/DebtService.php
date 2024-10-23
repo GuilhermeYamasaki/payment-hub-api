@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Interfaces\DebtRepositoryInterface;
 use App\Services\Interfaces\DebtServiceInterface;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class DebtService implements DebtServiceInterface
 {
@@ -11,19 +12,56 @@ class DebtService implements DebtServiceInterface
         private readonly DebtRepositoryInterface $debtRepository
     ) {}
 
-    public function persist(object $data): void
+    /**
+     * {@inheritDoc}
+     */
+    public function recordGenerateSlip(string $id): void
     {
-        $debtId = data_get($data, 'id');
+        $this->find($id, true);
 
-        if (! $this->find($debtId)) {
-            $this->debtRepository->create($data);
-        }
+        $this->debtRepository->update($id, [
+            'generate_slip_at' => now(),
+        ]);
 
-        $this->debtRepository->update($debtId, $data);
+        cache()->forget(
+            __('cache.debt.id', ['id' => $id])
+        );
     }
 
-    public function find(string $id): ?object
+    /**
+     * {@inheritDoc}
+     */
+    public function recordNotify(string $id): void
     {
-        return $this->debtRepository->find($id);
+        $debt = $this->find($id, true);
+
+        $this->debtRepository->update($id, [
+            'notify_at' => now(),
+        ]);
+
+        cache()->forget(
+            __('cache.debt.id', ['id' => $id])
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function find(string $id, bool $findOrFail = false): ?object
+    {
+        return cache()->remember(
+            __('cache.debt.id', ['id' => $id]),
+            now()->addDay(),
+            function () use ($id, $findOrFail) {
+                $debt = $this->debtRepository->find($id);
+
+                throw_if(
+                    empty($debt) && $findOrFail,
+                    NotFoundResourceException::class,
+                );
+
+                return $debt;
+            }
+        );
     }
 }

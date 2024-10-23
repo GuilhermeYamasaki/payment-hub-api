@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\DebtStatusEnum;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,15 +17,18 @@ class Debt extends Model
         'government_id',
         'email',
         'amount',
-        'due_date',
-        'status_enum',
+        'due_date_at',
+        'notify_at',
+        'generate_slip_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'due_date' => 'date',
-            'status_enum' => DebtStatusEnum::class,
+            'government_id' => 'integer',
+            'due_date_at' => 'datetime',
+            'notify_at' => 'datetime',
+            'generate_slip_at' => 'datetime',
         ];
     }
 }

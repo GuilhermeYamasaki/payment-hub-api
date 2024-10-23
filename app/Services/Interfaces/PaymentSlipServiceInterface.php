@@ -7,5 +7,5 @@ interface PaymentSlipServiceInterface
     /**
      * Generate payment slip for user.
      */
-    public function generateSlip(object $debt): void;
+    public function generateSlip(string $debtId): void;
 }
