@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ProcessCsvBillingJob;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
@@ -9,10 +10,7 @@ use Tests\TestCase;
 
 class ProcessBillingControllerTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function should_send_attachment_file_to_process_success(): void
+    public function test_send_attachment_file_to_process_success(): void
     {
         // Arrange
         Queue::fake();
@@ -30,12 +28,11 @@ class ProcessBillingControllerTest extends TestCase
 
         // Assert
         $response->assertOk();
+
+        Queue::assertPushed(ProcessCsvBillingJob::class);
     }
 
-    /**
-     * @test
-     */
-    public function should_error_when_send_empty_body(): void
+    public function test_error_when_send_empty_body(): void
     {
         // Arrange
         $body = [];
