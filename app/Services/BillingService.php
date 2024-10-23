@@ -11,6 +11,7 @@ use App\Traits\FileTrait;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 
 class BillingService implements BillingServiceInterface
 {
@@ -53,6 +54,21 @@ class BillingService implements BillingServiceInterface
      */
     private function hydrateDebt(array $data): array
     {
+        $validador = validator($data, [
+            'debtId' => 'required|string',
+            'name' => 'required|string',
+            'governmentId' => 'required|integer',
+            'email' => 'required|email',
+            'debtAmount' => 'required|numeric',
+            'debtDueDate' => 'required|date',
+        ]);
+
+        throw_if(
+            $validador->fails(),
+            InvalidArgumentException::class,
+            $validador->errors()->first()
+        );
+
         return [
             'id' => data_get($data, 'debtId'),
             'name' => data_get($data, 'name'),
