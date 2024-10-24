@@ -60,6 +60,36 @@ Rode os testes
 sail artisan test
 ```
 
+Configure o MinIO
+1. **Acesse o painel do MinIO**:
+   Abra seu navegador e vá para [Minio](http://localhost:9000). Use as credenciais abaixo para fazer login:
+
+   - **Usuário**: `sail`
+   - **Senha**: `password`
+
+2. **Criar um bucket**:
+   - Após fazer login, clique em "Buckets" no menu lateral.
+   - Clique em "Create Bucket" e escolha um nome para o bucket.
+   - Depois de criar o bucket, clique no nome dele para acessar as configurações.
+
+3. **Definir o bucket como público**:
+   - Dentro do bucket, clique em "Settings" (ícone de engrenagem).
+   - Na aba de permissões, selecione a opção de tornar o bucket público, permitindo que todos tenham acesso de leitura aos arquivos.
+
+4. **Criar Access Key e Secret Key**:
+   - No canto superior direito, clique no seu nome de usuário e, em seguida, em "IAM Users".
+   - Clique em "Create User", defina um nome e selecione as permissões adequadas.
+   - O MinIO irá gerar uma **Access Key** e uma **Secret Key**. Salve essas informações.
+
+5. **Preencher o arquivo .env**:
+   No arquivo `.env`, adicione as chaves geradas e o nome do bucket:
+
+   ```bash
+   AWS_BUCKET=nome_do_bucket
+   AWS_ACCESS_KEY_ID=your_access_key_here
+   AWS_SECRET_ACCESS_KEY=your_secret_key_here
+
+
 Abrir um terminal e deixar executando
 ```bash
 sail artisan horizon
