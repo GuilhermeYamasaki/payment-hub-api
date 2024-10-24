@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Collection;
 
-class ProccessDebtsJob implements ShouldQueue
+class ProcessDebtsJob implements ShouldQueue
 {
     use Queueable;
 

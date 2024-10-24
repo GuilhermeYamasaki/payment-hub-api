@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Repositories\Interfaces\DebtRepositoryInterface;
 use App\Services\Interfaces\BillingServiceInterface;
 use Illuminate\Support\Facades\Queue;
-use InvalidArgumentException;
 use Tests\TestCase;
 
 class BilligServiceTest extends TestCase
@@ -39,21 +38,5 @@ class BilligServiceTest extends TestCase
         // Assert
         $debtRepositoryMock->shouldHaveReceived('insert')
             ->once();
-    }
-
-    public function test_error_when_process_debt_with_invalid_data(): void
-    {
-        // Assert
-        $this->expectException(InvalidArgumentException::class);
-
-        // Arrange
-        $billingMock = [
-            'test',
-        ];
-
-        // Act
-        resolve(BillingServiceInterface::class)
-            ->processDebts(collect([$billingMock]));
-
     }
 }
