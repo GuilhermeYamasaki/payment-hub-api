@@ -6,18 +6,7 @@
 - [Docker compose 2.x](https://docs.docker.com/compose/install/#prerequisites) 
 - [Composer](https://getcomposer.org/)  
 - [PHP 8.3](https://www.php.net/releases/8.3/en.php)
-- [Sentry](https://sentry.io/welcome/)
-
-## Observalidade
-
-- [Telescope](http://localhost:8000/telescope) : Acesse o Telescope para monitorar suas requisições e variáveis de ambiente
-- [Horizon](http://localhost:8000/horizon) : Use o Horizon para visualizar e gerenciar suas filas de trabalho.
-- [Sentry](https://sentry.io/welcome/) : Para integrar o Sentry, siga os passos abaixo:
-
-    Abra o arquivo `.env` e preencha o campo `SENTRY_LARAVEL_DSN` com seu DSN do Sentry:
-    ```bash
-    SENTRY_LARAVEL_DSN=your_sentry_dsn_here
-    ```
+- [Sentry](https://sentry.io/welcome/) - Não obrigatório
 
 ## Iniciando o projeto
 
@@ -89,3 +78,14 @@ Para enviar um arquivo e testar o projeto, siga os passos abaixo:
    ```bash
    curl --request POST   --url http://localhost:8000/api/billing/process/csv   --header 'content-type: multipart/form-data'   --form attachment=@{path/to/your/file}
    ```
+   
+## Observalidade
+
+- [Telescope](http://localhost:8000/telescope) : Acesse o Telescope para monitorar suas requisições e variáveis de ambiente
+- [Horizon](http://localhost:8000/horizon) : Use o Horizon para visualizar e gerenciar suas filas de trabalho.
+- [Sentry](https://sentry.io/welcome/) - Não obrigatório: Para integrar o Sentry, siga os passos abaixo:
+
+    Abra o arquivo `.env` e preencha o campo `SENTRY_LARAVEL_DSN` com seu DSN do Sentry:
+    ```bash
+    SENTRY_LARAVEL_DSN=your_sentry_dsn_here
+    ```
